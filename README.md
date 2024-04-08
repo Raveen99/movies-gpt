@@ -2,6 +2,14 @@
 
 - Create react app
 - Configured tailwind
+- Header
+- Routing
+- SignIn/SignUp Form
+- Form Validation
+- UseRef Hook
+- Using Firbase to setUp Authentication
+- Implementing SignIn/SignUp Api
+- Creating Redux Store
 
 # Features
 
