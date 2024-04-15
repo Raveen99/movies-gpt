@@ -9,6 +9,7 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const Login = () => {
   const [isSignIn, setSignIn] = useState(true);
@@ -42,13 +43,17 @@ const Login = () => {
           // Signed in
           const user = userCredential.user;
           console.log("User in sign in: ", user);
+          toast("Logged in successfully");
           navigate("/browse");
           // ...
         })
         .catch((error) => {
           const errorCode = error.code;
-          const errorMessage = error.message;
-          setErrorMessage(errorCode + " " + errorMessage);
+          //const errorMessage = error.message;
+
+          if (errorCode.includes("invalid-credential")) {
+            toast.error("Invalid Email or Password");
+          }
         });
     } else {
       message = checkSignUpData(
