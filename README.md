@@ -10,6 +10,8 @@
 - Using Firbase to setUp Authentication
 - Implementing SignIn/SignUp Api
 - Creating Redux Store
+- Creating User Slice
+- Unsubscribe to onAuthStateChanged callback
 
 # Features
 

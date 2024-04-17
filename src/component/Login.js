@@ -7,9 +7,12 @@ import { auth } from "../utils/firebase";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  updateProfile,
 } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
+
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { addUser } from "../store/userSlice";
 
 const Login = () => {
   const [isSignIn, setSignIn] = useState(true);
@@ -19,7 +22,7 @@ const Login = () => {
   const email = useRef(null);
   const password = useRef(null);
   const name = useRef(null);
-  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const toggleSignInForm = () => {
     setSignIn(!isSignIn);
@@ -41,15 +44,16 @@ const Login = () => {
       )
         .then((userCredential) => {
           // Signed in
-          const user = userCredential.user;
+          const user = auth.currentUser;
+
           console.log("User in sign in: ", user);
-          toast("Logged in successfully");
-          navigate("/browse");
+          toast(`Welcome back ${user.displayName}`);
           // ...
         })
         .catch((error) => {
           const errorCode = error.code;
-          //const errorMessage = error.message;
+          const errorMessage = error.message;
+          setErrorMessage(errorCode + " " + errorMessage);
 
           if (errorCode.includes("invalid-credential")) {
             toast.error("Invalid Email or Password");
@@ -73,8 +77,24 @@ const Login = () => {
         .then((userCredential) => {
           // Signed up
           const user = userCredential.user;
-          console.log("User: ", user);
-          navigate("/browse");
+          updateProfile(user, {
+            displayName: name.current.value,
+          })
+            .then(() => {
+              console.log("Auth: ", auth);
+              const { uid, email, displayName } = auth.currentUser;
+              dispatch(
+                addUser({
+                  uid: uid,
+                  email: email,
+                  displayName: displayName,
+                })
+              );
+              toast("Welcome to Movies-GPT");
+            })
+            .catch((error) => {
+              setErrorMessage(error.message);
+            });
           // ...
         })
         .catch((error) => {
